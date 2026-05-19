@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: engram-cloud
+    runtime: image
+    image:
+      url: ghcr.io/gentleman-programming/engram:latest
+    startCommand: cloud serve
+    plan: free
+    region: oregon
+    envVars:
+      - key: ENGRAM_DATABASE_URL
+        fromDatabase:
+          name: engram-cloud-db
+          property: connectionString
+      - key: ENGRAM_JWT_SECRET
+        generateValue: true
+      - key: ENGRAM_CLOUD_TOKEN
+        generateValue: true
+      - key: ENGRAM_CLOUD_ALLOWED_PROJECTS
+        value: kusystem-saas
+      - key: ENGRAM_CLOUD_HOST
+        value: 0.0.0.0
+      - key: ENGRAM_PORT
+        value: "10000"
+    healthCheckPath: /health
+
+databases:
+  - name: engram-cloud-db
+    plan: free
+    region: oregon
+    databaseName: engram_cloud
+    user: engram
